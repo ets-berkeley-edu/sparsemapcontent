@@ -60,16 +60,16 @@ public class JDBCStorageClientPool extends AbstractClientConnectionPool {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCStorageClientPool.class);
 
-    @Property(value = { "jdbc:derby:sling/sparsemap/db;create=true" })
+    @Property(value = { "" })
     public static final String CONNECTION_URL = "jdbc-url";
-    @Property(value = { "org.apache.derby.jdbc.EmbeddedDriver" })
+    @Property(value = { "" })
     public static final String JDBC_DRIVER = "jdbc-driver";
 
-    @Property(value = { "sa" })
+    @Property(value = { "" })
     private static final String USERNAME = "username";
     @Property(value = { "" })
     private static final String PASSWORD = "password";
- 
+
     @Reference(cardinality=ReferenceCardinality.OPTIONAL_UNARY, policy=ReferencePolicy.DYNAMIC)
     private StorageCacheManager storageManagerCache;
 
@@ -149,15 +149,15 @@ public class JDBCStorageClientPool extends AbstractClientConnectionPool {
         sharedCache = new ConcurrentLRUMap<String, CacheHolder>(10000);
         // this is a default cache used where none has been provided.
         defaultStorageManagerCache = new StorageCacheManager() {
-            
+
             public Map<String, CacheHolder> getContentCache() {
                 return sharedCache;
             }
-            
+
             public Map<String, CacheHolder> getAuthorizableCache() {
                 return sharedCache;
             }
-            
+
             public Map<String, CacheHolder> getAccessControlCache() {
                 return sharedCache;
             }
