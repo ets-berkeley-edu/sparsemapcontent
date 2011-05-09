@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.pool.PoolableObjectFactory;
 import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.ConfigurationPolicy;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Property;
 import org.apache.felix.scr.annotations.Reference;
@@ -54,7 +55,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Timer;
 
-@Component(immediate = true, metatype = true, inherit = true)
+@Component(immediate = true, metatype = true, inherit = true, policy = ConfigurationPolicy.REQUIRE)
 @Service(value = StorageClientPool.class)
 public class JDBCStorageClientPool extends AbstractClientConnectionPool {
 
