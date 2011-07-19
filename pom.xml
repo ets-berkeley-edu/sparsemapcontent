@@ -316,17 +316,17 @@
 <!-- D I S T R I B U T I O N M A N A G E M E N T -->
 <!-- ====================================================================== -->
   <distributionManagement>
-    <downloadUrl>http://source.sakaiproject.org/maven2/</downloadUrl>
+    <downloadUrl>http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-production</downloadUrl>
     <snapshotRepository>
       <id>myberkeley-snapshots</id>
       <name>MyBerkeley Snapshots</name>
-      <url>dav:http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-snapshots/</url>
+      <url>dav:http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-production-snapshots/</url>
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
     <repository>
       <id>myberkeley</id>
       <name>MyBerkeley</name>
-      <url>dav:http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley/</url>
+      <url>dav:http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-production/</url>
       <uniqueVersion>false</uniqueVersion>
     </repository>
     <site>
@@ -345,7 +345,7 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-      <url>http://source.sakaiproject.org/maven2/</url>
+      <url>http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-production/</url>
     </repository>
     <repository>
       <id>myberkeley-releases</id>
@@ -356,13 +356,13 @@
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
-      <url>http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley/</url>
+      <url>http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-production/</url>
     </repository>
     <repository>
       <id>myberkeley-snapshots</id>
       <name>MyBerkeley Snapshots</name>
       <layout>default</layout>
-      <url>http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-snapshots/</url>
+      <url>http://svn.media.berkeley.edu/nexus/content/repositories/myberkeley-production-snapshots/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
