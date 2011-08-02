@@ -60,6 +60,14 @@ public interface ContentManager {
     Iterable<Content> find(Map<String, Object> searchProperties) throws StorageClientException, AccessDeniedException;
 
     /**
+     * Counts the maximum number of results a find operation could return, ignoring access control. This method may cause problems
+     * if used inappropriately on sets of results that are mostly not readable by the current user (eg how many documents are there with "ieb" and "your fired" in ?)
+     * @param searchProperties Map the same as the finder
+     * @return maximum number of results a find could return.
+     */
+    int count(Map<String, Object> countSearch) throws StorageClientException;
+
+    /**
      * Save the current version of the content object including metadata and
      * file bodies as a read only snapshot
      * 
@@ -367,6 +375,8 @@ public interface ContentManager {
      * the target ContentManagerImpl, before you enable maintanence mode. Failure to do so may destroy your content.
      */
     void setMaintanenceMode(boolean maintanenceMode);
+
+
 
 
 }
