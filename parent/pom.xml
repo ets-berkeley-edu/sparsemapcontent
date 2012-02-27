@@ -97,6 +97,11 @@
 				</configuration>
 			</plugin>
 		</plugins>
+    <!--
+      The below is REQUIRED when deploying from Maven 3 but BREAKS
+      deploying from Maven 2.
+    -->
+    <!--
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
@@ -104,6 +109,7 @@
 				<version>2.1</version>
 			</extension>
 		</extensions>
+		-->
 	</build>
 	<profiles>
 		<profile>
