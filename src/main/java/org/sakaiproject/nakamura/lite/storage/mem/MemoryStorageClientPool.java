@@ -25,12 +25,9 @@ import org.apache.felix.scr.annotations.Activate;
 import org.apache.felix.scr.annotations.Component;
 import org.apache.felix.scr.annotations.Deactivate;
 import org.apache.felix.scr.annotations.Service;
-import org.sakaiproject.nakamura.api.lite.BaseColumnFamilyCacheManager;
-import org.sakaiproject.nakamura.api.lite.CacheHolder;
-import org.sakaiproject.nakamura.api.lite.ColumnFamilyCacheManager;
 import org.sakaiproject.nakamura.api.lite.StorageCacheManager;
-import org.sakaiproject.nakamura.lite.storage.AbstractClientConnectionPool;
-import org.sakaiproject.nakamura.lite.storage.StorageClientPool;
+import org.sakaiproject.nakamura.lite.storage.spi.AbstractClientConnectionPool;
+import org.sakaiproject.nakamura.lite.storage.spi.StorageClientPool;
 
 import com.google.common.collect.Maps;
 
@@ -82,16 +79,8 @@ public class MemoryStorageClientPool extends AbstractClientConnectionPool {
 
     private Map<String, Object> store;
     private Map<String, Object> properties;
-    private ColumnFamilyCacheManager defaultStorageManagerCache;
-
+    
     public MemoryStorageClientPool() {
-        defaultStorageManagerCache = new BaseColumnFamilyCacheManager() {
-            
-            public Map<String, CacheHolder> getCache(String columnFamily) {
-                return null;
-            }
-            
-        };
     }
 
     @Activate
@@ -114,7 +103,7 @@ public class MemoryStorageClientPool extends AbstractClientConnectionPool {
 
     
     public StorageCacheManager getStorageCacheManager() {
-        return defaultStorageManagerCache;
+        return null;
     }
 
 

@@ -5,13 +5,13 @@
   <parent>
     <groupId>org.sakaiproject.nakamura</groupId>
     <artifactId>core-base</artifactId>
-    <version>2</version>
-    <!-- <relativePath>../../parent/pom.xml</relativePath> -->
+    <version>4</version>
+    <relativePath>../../parent/pom.xml</relativePath>
   </parent>
   <groupId>org.sakaiproject.nakamura</groupId>
   <artifactId>org.sakaiproject.nakamura.milton</artifactId>
   <packaging>bundle</packaging>
-  <version>1.6.4-SNAPSHOT</version>
+  <version>1.6.4-20120223</version>
   <name>Sparse Map :: Milton Support</name>
   <description>Provides Milton Jar  </description>
   <properties>
@@ -22,7 +22,6 @@
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.0.1</version>
         <extensions>true</extensions>
         <configuration>
           <instructions>

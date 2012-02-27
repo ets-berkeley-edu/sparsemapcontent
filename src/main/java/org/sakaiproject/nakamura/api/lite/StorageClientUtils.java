@@ -28,7 +28,7 @@ import org.sakaiproject.nakamura.api.lite.accesscontrol.AccessDeniedException;
 import org.sakaiproject.nakamura.api.lite.content.Content;
 import org.sakaiproject.nakamura.api.lite.content.ContentManager;
 import org.sakaiproject.nakamura.api.lite.util.Type1UUID;
-import org.sakaiproject.nakamura.lite.types.Types;
+import org.sakaiproject.nakamura.lite.storage.spi.types.Types;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -479,7 +479,7 @@ public class StorageClientUtils {
      */
     @SuppressWarnings("unchecked")
     public static <T> T getSetting(Object setting, T defaultValue) {
-        if (setting != null) {
+        if (setting != null && defaultValue != null) {
             if (defaultValue.getClass().isAssignableFrom(setting.getClass())) {
                 return (T) setting;
             }
