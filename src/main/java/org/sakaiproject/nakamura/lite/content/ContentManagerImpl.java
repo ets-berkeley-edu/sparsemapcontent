@@ -366,7 +366,11 @@ public class ContentManagerImpl extends CachingManager implements ContentManager
         }
     }
 
-    public void update(Content excontent) throws AccessDeniedException, StorageClientException {
+    public void update(Content content) throws AccessDeniedException, StorageClientException {
+        update(content, Boolean.TRUE);
+    }
+
+    public void update(Content excontent, boolean withTouch) throws AccessDeniedException, StorageClientException {
         checkOpen();
         InternalContent content = (InternalContent) excontent;
         String path = content.getPath();
@@ -386,14 +390,16 @@ public class ContentManagerImpl extends CachingManager implements ContentManager
         }
 
         Map<String, Object> originalProperties = ImmutableMap.of();
+        boolean touch = withTouch || !User.ADMIN_USER.equals(accessControlManager.getCurrentUserId());
 
         if (content.isNew()) {
-            // create the parents if necessary
-            if (!StorageClientUtils.isRoot(path)) {
-                String parentPath = StorageClientUtils.getParentObjectPath(path);
-                Content parentContent = get(parentPath);
-                if (parentContent == null) {
-                    update(new Content(parentPath, null));
+
+          // create the parents if necessary
+          if (!StorageClientUtils.isRoot(path)) {
+              String parentPath = StorageClientUtils.getParentObjectPath(path);
+              Content parentContent = get(parentPath);
+              if (parentContent == null) {
+                  update(new Content(parentPath, null), withTouch);
                 }
             }
             toSave =  Maps.newHashMap(content.getPropertiesForUpdate());
@@ -401,26 +407,34 @@ public class ContentManagerImpl extends CachingManager implements ContentManager
             // if the user is admin we allow overwriting of protected fields. This should allow content migration.
             toSave.put(UUID_FIELD, id);
             toSave.put(PATH_FIELD, path);
-            toSave.put(CREATED_FIELD, System.currentTimeMillis());
-            toSave.put(CREATED_BY_FIELD, accessControlManager.getCurrentUserId());
-            toSave.put(LASTMODIFIED_FIELD, System.currentTimeMillis());
+            toSave.put(CREATED_FIELD,
+                    touch ? System.currentTimeMillis() : content.getProperty(CREATED_FIELD));
+            toSave.put(CREATED_BY_FIELD,
+                    touch ? accessControlManager.getCurrentUserId() : content.getProperty(CREATED_BY_FIELD));
+            toSave.put(LASTMODIFIED_FIELD,
+                    touch ? System.currentTimeMillis() : content.getProperty(LASTMODIFIED_FIELD));
             toSave.put(LASTMODIFIED_BY_FIELD,
-                    accessControlManager.getCurrentUserId());
+                    touch? accessControlManager.getCurrentUserId() : content.getProperty(LASTMODIFIED_BY_FIELD));
             LOGGER.debug("New Content with {} {} ", id, toSave);
         } else if (content.isUpdated()) {
             originalProperties = content.getOriginalProperties();
             toSave =  Maps.newHashMap(content.getPropertiesForUpdate());
 
-            for (String field : PROTECTED_FIELDS) {
-                LOGGER.debug ("Resetting value for {} to {}", field, originalProperties.get(field));
-                toSave.put(field, originalProperties.get(field));
-            }
 
-            id = (String)toSave.get(UUID_FIELD);
+          // only admin can bypass the lastModified fields using withTouch=false
+          if (touch) {
+            for (String field : PROTECTED_FIELDS) {
+              LOGGER.debug("Resetting value for {} to {}", field, originalProperties.get(field));
+              toSave.put(field, originalProperties.get(field));
+            }
             toSave.put(LASTMODIFIED_FIELD, System.currentTimeMillis());
             toSave.put(LASTMODIFIED_BY_FIELD,
                     accessControlManager.getCurrentUserId());
-            LOGGER.debug("Updating Content with {} {} ", id, toSave);
+          } else {
+            toSave.put(UUID_FIELD, originalProperties.get(UUID_FIELD));
+          }
+          id = (String)toSave.get(UUID_FIELD);
+          LOGGER.debug("Updating Content with {} {} ", id, toSave);
         } else {
             // if not new or updated, dont update.
             return;
@@ -725,8 +739,12 @@ public class ContentManagerImpl extends CachingManager implements ContentManager
                 idStore, PATH_FIELD, from, LINKED_PATH_FIELD, to), true);
 
     }
-
+  
     public String saveVersion(String path) throws StorageClientException, AccessDeniedException {
+        return saveVersion(path, null);
+    }
+
+    public String saveVersion(String path, Map<String, Object> versionMetadata) throws StorageClientException, AccessDeniedException {
         checkOpen();
         accessControlManager.check(Security.ZONE_CONTENT, path, Permissions.CAN_WRITE);
         Map<String, Object> structure = getCached(keySpace, contentColumnFamily, path);
@@ -764,6 +782,12 @@ public class ContentManagerImpl extends CachingManager implements ContentManager
         saveVersion.put(READONLY_FIELD, TRUE);
         Object versionNumber = System.currentTimeMillis();
         saveVersion.put(VERSION_NUMBER_FIELD, versionNumber);
+      
+        if (versionMetadata != null) {
+          for (Entry<String, Object> entry : versionMetadata.entrySet()) {
+            saveVersion.put("metadata:" + entry.getKey(), entry.getValue());
+          }
+        }
 
         putCached(keySpace, contentColumnFamily, saveVersionId, saveVersion, false);
         putCached(keySpace, contentColumnFamily, newVersionId, newVersion, true);
