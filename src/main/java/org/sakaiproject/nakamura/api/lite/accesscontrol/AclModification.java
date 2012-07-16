@@ -212,4 +212,52 @@ public class AclModification {
         return AccessControlManager.PROPERTY_PRINCIPAL_STEM+id+"@"+propertyName;
     }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * @see java.lang.Object#hashCode()
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + bitmap;
+    result = prime * result + ((key == null) ? 0 : key.hashCode());
+    result = prime * result + ((op == null) ? 0 : op.hashCode());
+    return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @see java.lang.Object#equals(java.lang.Object)
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof AclModification)) {
+      return false;
+    }
+    AclModification other = (AclModification) obj;
+    if (bitmap != other.bitmap) {
+      return false;
+    }
+    if (key == null) {
+      if (other.key != null) {
+        return false;
+      }
+    } else if (!key.equals(other.key)) {
+      return false;
+    }
+    if (op != other.op) {
+      return false;
+    }
+    return true;
+  }
+
 }

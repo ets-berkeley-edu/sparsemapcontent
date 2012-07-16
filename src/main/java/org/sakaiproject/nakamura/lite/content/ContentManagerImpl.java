@@ -440,6 +440,16 @@ public class ContentManagerImpl extends CachingManager implements ContentManager
     }
 
     public void update(Content excontent, boolean withTouch) throws AccessDeniedException, StorageClientException {
+        if (LOGGER.isDebugEnabled()) {
+          StackTraceElement[] currentStackTrace = Thread.currentThread().getStackTrace();
+          Object[] logElements = new Object[5];
+          logElements[0] = excontent.getPath();
+          for (int i = 1; i < logElements.length; i++) {
+              String stackSegment = currentStackTrace[i].getClassName() + "." + currentStackTrace[i].getMethodName();
+              logElements[i] = stackSegment;
+          }
+          LOGGER.debug("updating content at '{}': ({} >> {} >> {} >> {})", logElements);
+        }
         checkOpen();
         InternalContent content = (InternalContent) excontent;
         String path = content.getPath();
